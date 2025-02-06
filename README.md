@@ -37,4 +37,5 @@ Before running this script, update transaction.js with:
 ## Links
 
 - [XRPL Documentation](https://xrpl.org/)
+- [More Example](https://docs.xrpl-commons.org/)
 - [Ripple Stablecoin](https://ripple.com/solutions/stablecoin/)
