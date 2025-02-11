@@ -1,4 +1,4 @@
-# XRPL Python - Simple Python Scripts
+# XRPL Python - Simple Python Scripts 🐍
 
 This repository contains Python scripts to interact with the XRP Ledger (XRPL), enabling wallet generation, trustline creation, transactions, and AMM operations.
 
