@@ -19,6 +19,19 @@ This repository contains Python scripts to interact with the XRP Ledger (XRPL), 
 pip install -r requirements.txt
 ```
 
+or:  
+```bash
+# Create a virtual env
+python3 -m venv myenv
+
+# Activate env
+source myenv/bin/activate  # On macOS/Linux
+# myenv\Scripts\activate  # On Windows
+
+# Install xrpl-py in the virtual env
+pip install xrpl-py```
+```
+  
 ## 📝 Usage
 
 1. Generate a new wallet:
