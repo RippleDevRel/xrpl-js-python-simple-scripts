@@ -58,7 +58,6 @@ async function main() {
         console.log("🚀 Submitting transaction...");
         const txResponse = await client.submitAndWait(signedTx.tx_blob);
 
-        // Vérifier si la transaction a été validée avec succès
         if (txResponse.result.meta.TransactionResult === "tesSUCCESS") {
             console.log("✅ Trustline approved for RLUSD!");
             console.log("🔹 Transaction Hash:", txResponse.result.hash);
