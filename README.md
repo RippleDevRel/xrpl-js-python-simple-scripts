@@ -10,19 +10,23 @@ The scripts are divided into two main folders:
 - **`python/`** → Contains Python scripts for XRPL interactions.
 
 ### JavaScript Scripts (`js/`)
-- `generate.js` → Generates a new XRPL wallet.
-- `trustline.js` → Creates a trustline for RLUSD.
-- `xrp_transaction.js` → Handles XRP transactions.
-- `amm_create_RLUSD_XRP.js` → Creates an AMM pool for RLUSD/XRP.
-- `amm_deposit_RLUSD_XRP.js` → Deposits into an existing AMM pool.
+- `generate.js` → Generates a new XRPL wallet (address & seed) 🔑
+- `generate_and_trustline.js` → Generates a wallet and establishes a trustline 🤝
+- `trustline.js` → Creates a trustline for the RLUSD token 🔄
+- `xrp_transaction.js` → Handles XRP transactions 💸
+- `rlusd_transaction.js` → Manages RLUSD token transactions 💰
+- `amm_create_RLUSD_XRP.js` → Creates an AMM pool for RLUSD/XRP pair 🏦
+- `amm_deposit_RLUSD_XRP.js` → Deposits assets into an existing AMM pool 📥
 
 
 ### Python Scripts (`python/`)
-- `generate.py` → Generates a new XRPL wallet.
-- `trustline.py` → Creates a trustline for RLUSD.
-- `xrp_transaction.py` → Handles XRP transactions.
-- `amm_create_RLUSD_XRP.py` → Creates an AMM pool for RLUSD/XRP.
-- `amm_deposit_RLUSD_XRP.py` → Deposits into an existing AMM pool.
+- `generate.py` → Generates a new XRPL wallet (address & seed) 🔑
+- `generate_and_trustline.py` → Generates a wallet and establishes a trustline 🤝
+- `trustline.py` → Creates a trustline for the RLUSD token 🔄
+- `xrp_transaction.py` → Handles XRP transactions 💸
+- `rlusd_transaction.py` → Manages RLUSD token transactions 💰
+- `amm_create_RLUSD_XRP.py` → Creates an AMM pool for RLUSD/XRP pair 🏦
+- `amm_deposit_RLUSD_XRP.py` → Deposits assets into an existing AMM pool 📥
 
 ## 🔧 Installation & Setup
 

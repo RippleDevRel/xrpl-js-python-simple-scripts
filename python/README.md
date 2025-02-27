@@ -4,13 +4,13 @@ This repository contains Python scripts to interact with the XRP Ledger (XRPL), 
 
 ## 📁 Project Structure
 
-- `generate.py` → Generates a new XRPL wallet (address & seed)
-- `generate_and_trustline.py` → Generates a wallet and establishes a trustline
-- `trustline.py` → Creates a trustline for the RLUSD token
-- `xrp_transaction.py` → Handles XRP transactions
-- `rlusd_transaction.py` → Manages RLUSD token transactions
-- `amm_create_RLUSD_XRP.py` → Creates an AMM pool for RLUSD/XRP pair
-- `amm_deposit_RLUSD_XRP.py` → Deposits assets into an existing AMM pool
+- `generate.py` → Generates a new XRPL wallet (address & seed) 🔑
+- `generate_and_trustline.py` → Generates a wallet and establishes a trustline 🤝
+- `trustline.py` → Creates a trustline for the RLUSD token 🔄
+- `xrp_transaction.py` → Handles XRP transactions 💸
+- `rlusd_transaction.py` → Manages RLUSD token transactions 💰
+- `amm_create_RLUSD_XRP.py` → Creates an AMM pool for RLUSD/XRP pair 🏦
+- `amm_deposit_RLUSD_XRP.py` → Deposits assets into an existing AMM pool 📥
 
 ## 🔧 Installation & Setup
 
