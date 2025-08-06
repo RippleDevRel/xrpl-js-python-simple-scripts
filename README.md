@@ -2,7 +2,7 @@
 
 This repository contains scripts in both JavaScript and Python to interact with the XRP Ledger (XRPL). These scripts allow testing functionalities such as wallet generation, trustline approval, transactions, and Automated Market Maker (AMM) operations.
 
-## Devnet - Testnet - Mainet 
+## Devnet - Testnet - Mainnet 
 
 The XRP Ledger operates on three distinct network environments, each serving different purposes in the development and deployment lifecycle.  
 
