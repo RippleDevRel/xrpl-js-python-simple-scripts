@@ -11,6 +11,8 @@ This repository contains JavaScript scripts to interact with the XRP Ledger (XRP
 - `rlusd_transaction.js` → Manages RLUSD token transactions 💰
 - `amm_create_RLUSD_XRP.js` → Creates an AMM pool for RLUSD/XRP pair 🏦
 - `amm_deposit_RLUSD_XRP.js` → Deposits assets into an existing AMM pool 📥
+- `escrow.js` → Create a condition and time based escrow 🔒
+
 
 ## 🔧 Installation & Setup
 

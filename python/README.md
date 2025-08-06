@@ -11,6 +11,8 @@ This repository contains Python scripts to interact with the XRP Ledger (XRPL), 
 - `rlusd_transaction.py` → Manages RLUSD token transactions 💰
 - `amm_create_RLUSD_XRP.py` → Creates an AMM pool for RLUSD/XRP pair 🏦
 - `amm_deposit_RLUSD_XRP.py` → Deposits assets into an existing AMM pool 📥
+- `escrow.py` → Create a condition and time based escrow 🔒
+
 
 ## 🔧 Installation & Setup
 

@@ -2,6 +2,18 @@
 
 This repository contains scripts in both JavaScript and Python to interact with the XRP Ledger (XRPL). These scripts allow testing functionalities such as wallet generation, trustline approval, transactions, and Automated Market Maker (AMM) operations.
 
+## Devnet - Testnet - Mainet 
+
+The XRP Ledger operates on three distinct network environments, each serving different purposes in the development and deployment lifecycle.  
+
+[**Devnet**](https://devnet.xrpl.org/) functions as a sandbox environment where new amendments and features are tested in their pre-release state, allowing developers to experiment with upcoming functionality before it reaches production.  
+
+[**Mainnet**](https://livenet.xrpl.org/) is the live production network where real XRP transactions occur and hold actual monetary value.  
+
+[**Testnet**](https://testnet.xrpl.org/) serves as a replica of Mainnet, mirroring its current state and configuration - when an amendment is activated on Mainnet, it is subsequently enabled on Testnet to maintain consistency between the two environments.  
+
+This tiered approach ensures thorough testing and validation of new features while providing developers with appropriate environments for different stages of application development.
+
 ## 📁 Project Structure
 
 The scripts are divided into two main folders:
@@ -17,6 +29,8 @@ The scripts are divided into two main folders:
 - `rlusd_transaction.js` → Manages RLUSD token transactions 💰
 - `amm_create_RLUSD_XRP.js` → Creates an AMM pool for RLUSD/XRP pair 🏦
 - `amm_deposit_RLUSD_XRP.js` → Deposits assets into an existing AMM pool 📥
+- `escrow.js` → Create a condition and time based escrow 🔒. 
+
 
 
 ### Python Scripts (`python/`)
@@ -27,6 +41,8 @@ The scripts are divided into two main folders:
 - `rlusd_transaction.py` → Manages RLUSD token transactions 💰
 - `amm_create_RLUSD_XRP.py` → Creates an AMM pool for RLUSD/XRP pair 🏦
 - `amm_deposit_RLUSD_XRP.py` → Deposits assets into an existing AMM pool 📥
+- `escrow.py` → Create a condition and time based escrow 🔒 
+
 
 ## 🔧 Installation & Setup
 

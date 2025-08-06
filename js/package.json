@@ -10,6 +10,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "xrpl": "^4.1.0"
+    "dayjs": "^1.11.13",
+    "five-bells-condition": "^5.0.1",
+    "xrpl": "^4.4.0"
   }
 }
