@@ -8,7 +8,7 @@ The XRP Ledger operates on three distinct network environments, each serving dif
 
 [**Devnet**](https://devnet.xrpl.org/) functions as a sandbox environment where new amendments and features are tested in their pre-release state, allowing developers to experiment with upcoming functionality before it reaches production.  
 
-[**Mainnet**](https://livenet.xrpl.org/) is the live production network where real XRP transactions occur and hold actual monetary value.  
+[**Mainnet (livenet)**](https://livenet.xrpl.org/) is the live production network where real XRP transactions occur and hold actual monetary value.  
 
 [**Testnet**](https://testnet.xrpl.org/) serves as a replica of Mainnet, mirroring its current state and configuration - when an amendment is activated on Mainnet, it is subsequently enabled on Testnet to maintain consistency between the two environments.  
 
