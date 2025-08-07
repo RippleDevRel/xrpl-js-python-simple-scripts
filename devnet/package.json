@@ -1,5 +1,5 @@
 {
-  "name": "xrpl-simple-js-scripts",
+  "name": "xrpl-simple-devnet-scripts",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
