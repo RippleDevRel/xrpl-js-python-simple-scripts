@@ -46,7 +46,9 @@ The scripts are divided into two main folders:
 ### New amendments  (`devnet/`)
 Within this folder you will find scripts to interact with new amendments that are only live on DevNet and not on Testnet/Mainnet. You can find the list of amendments currently live on DevNet here: https://devnet.xrpl.org/amendments.  
 **Important note**: An amendment may be live on DevNet but not yet supported by one of the XRPL libraries (Python/JS). Please check the library documentation or release notes for compatibility before using these scripts.
-
+- `mpt.js` → Issue and interact with MPTs
+- `batch.js` → Test the new batch transaction amendment
+- `tokenEscrow.js` → Use MPT with Escrow instead of XRP
 
 ## 🔧 Installation & Setup
 
