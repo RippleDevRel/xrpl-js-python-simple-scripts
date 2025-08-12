@@ -235,17 +235,7 @@ async function main() {
   
   // Get MPT balances for both accounts
   try {
-    console.log(`\n💳 Checking MPT Balances:`);
-    
-    // Get issuer MPT balances
-    const issuerMPTs = await client.request({
-      command: "account_objects",
-      account: issuerWallet.address,
-      ledger_index: "validated",
-      type: "mptoken"
-    });
-    
-    // Get holder MPT balances  
+    // Check MPT balances
     const holderMPTs = await client.request({
       command: "account_objects",
       account: holderWallet.address,
@@ -253,12 +243,31 @@ async function main() {
       type: "mptoken"
     });
     
-    console.log(`   🏦 Issuer MPT Holdings: ${issuerMPTs.result.account_objects.length} tokens`);
-    console.log(`   👤 Holder MPT Holdings: ${holderMPTs.result.account_objects.length} tokens`);
+    const issuerMPTs = await client.request({
+      command: "account_objects",
+      account: issuerWallet.address,
+      ledger_index: "validated",
+      type: "mptoken"
+    });
     
-    } catch (error) {
-      console.log(`   ⚠️  Could not fetch MPT balances: ${error.message}`);
+    console.log(`\n💳 Token Balances:`);
+    console.log(`📤 Holder MPT Holdings: ${holderMPTs.result.account_objects.length} tokens`);
+    console.log(`📥 Issuer MPT Holdings: ${issuerMPTs.result.account_objects.length} tokens`);
+    
+    // Display balances if available
+    if (holderMPTs.result.account_objects.length > 0) {
+      const holderBalance = holderMPTs.result.account_objects[0].MPTAmount;
+      console.log(`📤 Holder Balance: ${holderBalance / Math.pow(10, tokenMetadata.decimals)} ${tokenMetadata.ticker}`);
     }
+    
+    if (issuerMPTs.result.account_objects.length > 0) {
+      const issuerBalance = issuerMPTs.result.account_objects[0].MPTAmount;
+      console.log(`📥 Issuer Balance: ${issuerBalance / Math.pow(10, tokenMetadata.decimals)} ${tokenMetadata.ticker}`);
+    }
+    
+  } catch (error) {
+    console.log(`⚠️  Could not fetch token balances: ${error.message}`);
+  }
   
   console.log(`\n🎯 Key Information:`);
   console.log(`🆔 MPT Issuance ID: ${mptIssuanceId}`);
