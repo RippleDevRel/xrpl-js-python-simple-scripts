@@ -75,7 +75,7 @@ source myenv/bin/activate  # On macOS/Linux
 pip install xrpl-py```
 ```  
 ## ⚠️ Important Notes
-- All scripts are designed for the XRPL Testnet.
+- All scripts are designed for the XRPL Testnet / Devnet.
 - Keep your wallet seed secure and never share it.
 - Ensure you have sufficient XRP for fees and reserves.
 - RLUSD operations require an established trustline first.
