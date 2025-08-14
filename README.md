@@ -49,6 +49,7 @@ Within this folder you will find scripts to interact with new amendments that ar
 - `mpt.js` → Issue and interact with MPTs
 - `batch.js` → Test the new batch transaction amendment
 - `tokenEscrow.js` → Use MPT with Escrow instead of XRP
+- `credential.js` -> Demonstrates On-Chain Credentials functionality
 
 ## 🔧 Installation & Setup
 
