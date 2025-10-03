@@ -30,7 +30,7 @@ The scripts are divided into two main folders:
 - `amm_create_RLUSD_XRP.js` → Creates an AMM pool for RLUSD/XRP pair 🏦
 - `amm_deposit_RLUSD_XRP.js` → Deposits assets into an existing AMM pool 📥
 - `escrow.js` → Create a condition and time based escrow 🔒. 
-
+- `mpt.js` → Issue and interact with MPTs. 
 
 
 ### Python Scripts (`python/`)
@@ -43,10 +43,10 @@ The scripts are divided into two main folders:
 - `amm_deposit_RLUSD_XRP.py` → Deposits assets into an existing AMM pool 📥
 - `escrow.py` → Create a condition and time based escrow 🔒 
 
+
 ### New amendments  (`devnet/`)
 Within this folder you will find scripts to interact with new amendments that are only live on DevNet and not on Testnet/Mainnet. You can find the list of amendments currently live on DevNet here: https://devnet.xrpl.org/amendments.  
 **Important note**: An amendment may be live on DevNet but not yet supported by one of the XRPL libraries (Python/JS). Please check the library documentation or release notes for compatibility before using these scripts.
-- `mpt.js` → Issue and interact with MPTs
 - `batch.js` → Test the new batch transaction amendment
 - `tokenEscrow.js` → Use MPT with Escrow instead of XRP
 - `credential.js` -> Demonstrates On-Chain Credentials functionality

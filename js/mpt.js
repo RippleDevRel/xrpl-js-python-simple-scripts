@@ -106,7 +106,7 @@ async function main() {
   const { wallet: holderWallet } = await client.fundWallet();
   
   console.log(`🏦 Issuer: ${issuerWallet.address}`);
-  console.log(`👤 Holder:   ${holderWallet.address}`);
+  console.log(`👤 Holder: ${holderWallet.address}`);
   
   // Wait for accounts to be fully funded and ready
   console.log('\n⏳ Waiting for accounts to be ready...');
@@ -175,11 +175,11 @@ async function main() {
   
   // === STEP 2: AUTHORIZE HOLDERS (Required despite flags) ===
   console.log('\n' + '='.repeat(50));
-  console.log('STEP 2: Authorizing Token Holders');
+  console.log('STEP 2: Token Holder authorize MPT');
   console.log('='.repeat(50));
   
   
-  console.log(`🔐 Authorizing holder to receive MPT: ${mptIssuanceId}`);
+  console.log(`🔐 Holder approve to receive MPT: ${mptIssuanceId}`);
   
   // First: Holder must authorize receiving a specific MPT tokens
   // Second: In case lsfMPTRequireAuth has been set during MPT creation, the issuer needs to authorize the holder
@@ -187,7 +187,7 @@ async function main() {
   const authHolderTx = {
     TransactionType: 'MPTokenAuthorize',
     Account: holderWallet.address,
-    MPTokenIssuanceID: mptIssuanceId
+     
   };
   
   try {
@@ -233,21 +233,45 @@ async function main() {
   console.log('FINAL STATUS & SUMMARY');
   console.log('='.repeat(50));
   
+  // Get MPT balances for both accounts
   try {
-    const issuerInfo = await getAccountInfo(client, issuerWallet.address);
-    const holderInfo = await getAccountInfo(client, holderWallet.address);
+    // Check MPT balances
+    const holderMPTs = await client.request({
+      command: "account_objects",
+      account: holderWallet.address,
+      ledger_index: "validated",
+      type: "mptoken"
+    });
     
-    console.log(`💰 Account XRP Balances:`);
-    console.log(`🏦 Issuer: ${(parseInt(issuerInfo.Balance) / 1000000).toFixed(6)} XRP`);
-    console.log(`👤 Holder:   ${(parseInt(holderInfo.Balance) / 1000000).toFixed(6)} XRP`);
+    const issuerMPTs = await client.request({
+      command: "account_objects",
+      account: issuerWallet.address,
+      ledger_index: "validated",
+      type: "mptoken"
+    });
+    
+    console.log(`\n💳 Token Balances:`);
+    console.log(`📤 Holder MPT Holdings: ${holderMPTs.result.account_objects.length} tokens`);
+    console.log(`📥 Issuer MPT Holdings: ${issuerMPTs.result.account_objects.length} tokens`);
+    
+    // Display balances if available
+    if (holderMPTs.result.account_objects.length > 0) {
+      const holderBalance = holderMPTs.result.account_objects[0].MPTAmount;
+      console.log(`📤 Holder Balance: ${holderBalance / Math.pow(10, tokenMetadata.decimals)} ${tokenMetadata.ticker}`);
+    }
+    
+    if (issuerMPTs.result.account_objects.length > 0) {
+      const issuerBalance = issuerMPTs.result.account_objects[0].MPTAmount;
+      console.log(`📥 Issuer Balance: ${issuerBalance / Math.pow(10, tokenMetadata.decimals)} ${tokenMetadata.ticker}`);
+    }
     
   } catch (error) {
-    console.log(`   ⚠️  Could not fetch account info: ${error.message}`);
+    console.log(`⚠️  Could not fetch token balances: ${error.message}`);
   }
   
   console.log(`\n🎯 Key Information:`);
   console.log(`🆔 MPT Issuance ID: ${mptIssuanceId}`);
-  console.log(`🏷️ Token Symbol: ${tokenMetadata.symbol}`);
+  console.log(`🏷️ Token Symbol: ${tokenMetadata.ticker}`);
   console.log(`📊 Decimals: ${tokenMetadata.decimals}`);
   console.log(`🔗 Issuer: ${issuerWallet.address}`);
   
@@ -259,7 +283,7 @@ async function main() {
   console.log('\n📚 What happened:');
   console.log('   1. ✅ Created MPT issuance with metadata and transfer capabilities');
   console.log('   2. ✅ Holder approves the MPT in order to receive the token');
-  console.log('   3. ✅ Transferred tokens directly from issuer to user');
+  console.log('   3. ✅ Transferred tokens directly from issuer to holder');
   console.log('   4. 🆔 Generated unique MPT Issuance ID for all operations');
   
   console.log('\n💡 Important Notes:');
@@ -273,8 +297,8 @@ async function main() {
 main()
   .then(() => {
     console.log(`\n📖 Learn More:`);
-    console.log(`   🔗 XLS-33 Specification: https://opensource.ripple.com/docs/xls-33d-multi-purpose-tokens`);
-    console.log(`   🔗 XRPL MPT Docs: https://xrpl.org/docs/tutorials/javascript/send-payments/sending-mpts#sending-mpts`);
+    console.log(`   🔗 XLS-33 Specification: https://github.com/XRPLF/XRPL-Standards/tree/master/XLS-0033-multi-purpose-tokens`);
+    console.log(`   🔗 XRPL MPT Docs: https://github.com/XRPLF/XRPL-Standards/tree/master/XLS-0033-multi-purpose-tokens`);
     console.log(`   🔗 Devnet Explorer: https://devnet.xrpl.org/`);
   })
   .catch((error) => {
