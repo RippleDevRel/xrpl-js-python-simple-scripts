@@ -141,16 +141,26 @@ const main = async () => {
   console.log('STEP 1: Creating MPT with Escrow Capabilities');
   console.log('='.repeat(50));
   
+  // Define token metadata folowwing XLS-89 Multi-Purpose Token Metadata Schema
   const tokenMetadata = {
-    name: "Escrowable Token",
     ticker: "ESC",
-    description: "A token designed for escrow operations",
-    decimals: 2,
-    total_supply: "10000000", // 100,000 units
-    asset_class: "other",
+    name: "Escrowable Token",
+    desc: "A demonstration Multi-Purpose Token for XRPL Devnet testing",
     icon: "https://xrpl.org/assets/favicon.16698f9bee80e5687493ed116f24a6633bb5eaa3071414d64b3bed30c3db1d1d.8a5edab2.ico",
-    issuer_name: "yourfavdevrel"
-  };
+    asset_class: "other",
+    issuer_name: "yourfavdevrel",
+    urls: [
+        {
+            url: "https://xrpl.org/docs",
+            type: "document",
+            title: "XRPL Documentation"
+        }
+    ],
+    additional_info: {
+        purpose: "Educational demonstration",
+        network: "Devnet"
+    }
+};
   
   const metadataHex = textToHex(JSON.stringify(tokenMetadata, null, 0));
   

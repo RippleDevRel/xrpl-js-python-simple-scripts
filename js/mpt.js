@@ -1,7 +1,7 @@
 const { Client } = require('xrpl');
 /*
 ===============================================================================
-                    MULTI-PURPOSE TOKENS (MPT) ON XRPL DEVNET
+                    MULTI-PURPOSE TOKENS (MPT) ON XRPL TESTNET
 ===============================================================================
 
 Multi-Purpose Tokens (MPTs) - XLS-33 standard
@@ -62,7 +62,6 @@ async function getMPTIssuanceId(client, txHash) {
       transaction: txHash
     };   
     const response = await client.request(txRequest);
-        
     // Check in meta field
     if (response.result.meta?.mpt_issuance_id) {
       return response.result.meta.mpt_issuance_id;
@@ -92,12 +91,12 @@ function sleep(ms) {
 // Main function to demonstrate MPT creation and transfer
 
 async function main() {
-  console.log('🚀 Multi-Purpose Tokens (MPT) Demo on XRPL Devnet');
+  console.log('🚀 Multi-Purpose Tokens (MPT) Demo on XRPL Testnet');
   console.log('='.repeat(70));
   
-  // Connect to XRPL Devnet where MPT amendment is active
-  console.log('🌐 Connecting to XRPL Devnet...');
-  const client = new Client('wss://s.devnet.rippletest.net:51233');
+  // Connect to XRPL Testnet where MPT amendment is active
+  console.log('🌐 Connecting to XRPL Testnet...');
+  const client = new Client('wss://s.altnet.rippletest.net:51233');
   await client.connect();
   
   // Generate funded wallets for the demo
@@ -117,18 +116,25 @@ async function main() {
   console.log('STEP 1: Creating MPT Issuance');
   console.log('='.repeat(50));
   
-  // Prepare comprehensive token metadata
-  // See 
+  // Prepare comprehensive token metadata following XLS-89 Multi-Purpose Token Metadata Schema
   const tokenMetadata = {
-    name: "DevNet Demo Token",
     ticker: "DDT",
-    description: "A demonstration Multi-Purpose Token for XRPL Devnet testing",
-    decimals: 2,
-    total_supply: "100000000", // 1,000,000 units
-    asset_class: "other", 
+    name: "Testnet Demo Token",
+    desc: "A demonstration Multi-Purpose Token for XRPL Testnet testing",
     icon: "https://xrpl.org/assets/favicon.16698f9bee80e5687493ed116f24a6633bb5eaa3071414d64b3bed30c3db1d1d.8a5edab2.ico",
-    use_case: "Educational demonstration",
-    issuer_name: "yourfavdevrel"
+    asset_class: "other",
+    issuer_name: "yourfavdevrel",
+    urls: [
+        {
+            url: "https://xrpl.org/docs",
+            type: "document",
+            title: "XRPL Documentation"
+        }
+    ],
+    additional_info: {
+        purpose: "Educational demonstration",
+        network: "Testnet"
+    }
   };
   
   const metadataHex = textToHex(JSON.stringify(tokenMetadata, null, 0));
@@ -167,8 +173,8 @@ async function main() {
     console.log(`   🆔 MPT Issuance ID: ${mptIssuanceId}`);
   } else {
     console.log('   ❌ Could not extract MPT Issuance ID');
-    console.log('   📝 Check the Devnet explorer for transaction details:');
-    console.log(`   🔗 https://devnet.xrpl.org/transactions/${txHash}`);
+    console.log('   📝 Check the testnet explorer for transaction details:');
+    console.log(`   🔗 https://testnet.xrpl.org/transactions/${txHash}`);
     await client.disconnect();
     return;
   }
@@ -187,6 +193,7 @@ async function main() {
   const authHolderTx = {
     TransactionType: 'MPTokenAuthorize',
     Account: holderWallet.address,
+    MPTokenIssuanceID: mptIssuanceId
      
   };
   
@@ -275,9 +282,9 @@ async function main() {
   console.log(`📊 Decimals: ${tokenMetadata.decimals}`);
   console.log(`🔗 Issuer: ${issuerWallet.address}`);
   
-  console.log(`\n🌐 Explore on Devnet:`);
-  console.log(` 📱 Issuer Account: https://devnet.xrpl.org/accounts/${issuerWallet.address}`);
-  console.log(` 📱 Holder Account: https://devnet.xrpl.org/accounts/${holderWallet.address}`);
+  console.log(`\n🌐 Explore on Testnet:`);
+  console.log(` 📱 Issuer Account: https://testnet.xrpl.org/accounts/${issuerWallet.address}`);
+  console.log(` 📱 Holder Account: https://testnet.xrpl.org/accounts/${holderWallet.address}`);
   
   console.log(`\n✨ MPT Demo Completed Successfully!`);
   console.log('\n📚 What happened:');
@@ -299,7 +306,7 @@ main()
     console.log(`\n📖 Learn More:`);
     console.log(`   🔗 XLS-33 Specification: https://github.com/XRPLF/XRPL-Standards/tree/master/XLS-0033-multi-purpose-tokens`);
     console.log(`   🔗 XRPL MPT Docs: https://github.com/XRPLF/XRPL-Standards/tree/master/XLS-0033-multi-purpose-tokens`);
-    console.log(`   🔗 Devnet Explorer: https://devnet.xrpl.org/`);
+    console.log(`   🔗 Testnet Explorer: https://testnet.xrpl.org/`);
   })
   .catch((error) => {
     console.error(`\n💥 Error in main execution: ${error.message}`);
