@@ -177,7 +177,7 @@ const main = async () => {
     Subject: aliceWallet.address,
     CredentialType: kycCredentialType,
     Expiration: expirationTime,
-    URI: textToHex('https://github.com/XRPLF/XRPL-Standards/tree/master/XLS-0070-credentials')
+    URI: textToHex('https://github.com/XRPLF/XRPL-Standards/tree/master/XLS-0070-credentials'),
   };
   
   await submitTransaction(

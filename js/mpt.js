@@ -14,12 +14,14 @@ https://github.com/XRPLF/XRPL-Standards/tree/master/XLS-0033-multi-purpose-token
 ===============================================================================
 */
 
-// Helper function to convert text to hex
 function textToHex(text) {
   return Buffer.from(text, 'utf8').toString('hex').toUpperCase();
 }
 
-// Helper function to submit MPT transactions with detailed logging
+function hexToText(hex) {
+  return Buffer.from(hex, 'hex').toString('utf8');
+}
+
 async function submitMPTTransaction(txn, client, wallet, description = '') {
   if (description) {
     console.log(`\n🔄 ${description}`);
@@ -54,7 +56,6 @@ async function submitMPTTransaction(txn, client, wallet, description = '') {
   }
 }
 
-// Helper function to extract MPT Issuance ID from transaction
 async function getMPTIssuanceId(client, txHash) {
   try {
     const txRequest = {
@@ -62,7 +63,6 @@ async function getMPTIssuanceId(client, txHash) {
       transaction: txHash
     };   
     const response = await client.request(txRequest);
-    // Check in meta field
     if (response.result.meta?.mpt_issuance_id) {
       return response.result.meta.mpt_issuance_id;
     }
@@ -73,33 +73,33 @@ async function getMPTIssuanceId(client, txHash) {
   }
 }
 
-// Helper function to get account information
-async function getAccountInfo(client, address) {
-  const accountInfoRequest = {
-    command: 'account_info',
-    account: address
-  };
-  const response = await client.request(accountInfoRequest);
-  return response.result.account_data;
+async function getMPTIssuanceInfo(client, mptIssuanceId) {
+  try {
+    const request = {
+      command: 'ledger_entry',
+      mpt_issuance: mptIssuanceId,
+      ledger_index: 'validated'
+    };
+    const response = await client.request(request);
+    return response.result.node;
+  } catch (error) {
+    console.log(`⚠️  Error getting MPT Issuance info: ${error.message}`);
+    return null;
+  }
 }
 
-// Sleep function
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
-
-// Main function to demonstrate MPT creation and transfer
 
 async function main() {
   console.log('🚀 Multi-Purpose Tokens (MPT) Demo on XRPL Testnet');
   console.log('='.repeat(70));
   
-  // Connect to XRPL Testnet where MPT amendment is active
   console.log('🌐 Connecting to XRPL Testnet...');
   const client = new Client('wss://s.altnet.rippletest.net:51233');
   await client.connect();
   
-  // Generate funded wallets for the demo
   console.log('\n💰 Creating funded test wallets...');
   const { wallet: issuerWallet } = await client.fundWallet();
   const { wallet: holderWallet } = await client.fundWallet();
@@ -107,16 +107,13 @@ async function main() {
   console.log(`🏦 Issuer: ${issuerWallet.address}`);
   console.log(`👤 Holder: ${holderWallet.address}`);
   
-  // Wait for accounts to be fully funded and ready
   console.log('\n⏳ Waiting for accounts to be ready...');
   await sleep(3000);
   
-  // === STEP 1: CREATE MPT ISSUANCE ===
   console.log('\n' + '='.repeat(50));
   console.log('STEP 1: Creating MPT Issuance');
   console.log('='.repeat(50));
   
-  // Prepare comprehensive token metadata following XLS-89 Multi-Purpose Token Metadata Schema
   const tokenMetadata = {
     ticker: "DDT",
     name: "Testnet Demo Token",
@@ -137,20 +134,20 @@ async function main() {
     }
   };
   
+  const assetScale = 2;
   const metadataHex = textToHex(JSON.stringify(tokenMetadata, null, 0));
   
   console.log(`📋 Token Metadata:`);
   console.log(JSON.stringify(tokenMetadata, null, 2));
   
-  // Create MPT with institutional-grade features
   const mptCreateTx = {
     TransactionType: 'MPTokenIssuanceCreate',
     Account: issuerWallet.address,
-    AssetScale: 2, // <-- Divisible into 100 units / 10^2
-    MaximumAmount: "100000000", //  <-- 1,000,000 units
-    TransferFee: 1000, // 1% transfer fee 
+    AssetScale: assetScale,
+    MaximumAmount: "100000000",
+    TransferFee: 1000,
     MPTokenMetadata: metadataHex,
-    Flags: 0x0008 + 0x0010 + 0x0020 + 0x0040 // Enable lsfMPTCanEscrow, lsfMPTCanTrade, lsfMPTCanTransfer, lsfMPTCanClawback. Find more: https://github.com/XRPLF/XRPL-Standards/tree/master/XLS-0033-multi-purpose-tokens#21122-flags 
+    Flags: 0x0008 + 0x0010 + 0x0020 + 0x0040
     };
   
   const createResponse = await submitMPTTransaction(
@@ -160,11 +157,9 @@ async function main() {
     "Creating MPT issuance"
   );
   
-  // Extract the MPT Issuance ID
   const txHash = createResponse.result?.hash;
   console.log(`\n🔍 Extracting MPT Issuance ID from transaction: ${txHash}`);
   
-  // Wait a moment for transaction to be processed
   await sleep(2000);
   
   const mptIssuanceId = await getMPTIssuanceId(client, txHash);
@@ -179,7 +174,30 @@ async function main() {
     return;
   }
   
-  // === STEP 2: AUTHORIZE HOLDERS (Required despite flags) ===
+  console.log('\n🔍 Fetching MPT Issuance details from ledger...');
+  const mptIssuanceInfo = await getMPTIssuanceInfo(client, mptIssuanceId);
+  
+  if (mptIssuanceInfo) {
+    console.log(`\n📊 On-Chain MPT Issuance Information:`);
+    console.log(`   🆔 Issuance ID: ${mptIssuanceId}`);
+    console.log(`   🏦 Issuer: ${mptIssuanceInfo.Issuer}`);
+    console.log(`   📏 Asset Scale: ${mptIssuanceInfo.AssetScale}`);
+    console.log(`   💰 Max Amount: ${mptIssuanceInfo.MaximumAmount}`);
+    console.log(`   💸 Transfer Fee: ${mptIssuanceInfo.TransferFee} (${mptIssuanceInfo.TransferFee / 1000}%)`);
+    console.log(`   🔢 Outstanding Amount: ${mptIssuanceInfo.OutstandingAmount}`);
+    
+    if (mptIssuanceInfo.MPTokenMetadata) {
+      try {
+        const metadataText = hexToText(mptIssuanceInfo.MPTokenMetadata);
+        const metadata = JSON.parse(metadataText);
+        console.log(`   🏷️  Ticker: ${metadata.ticker}`);
+        console.log(`   📝 Name: ${metadata.name}`);
+      } catch (e) {
+        console.log(`   📝 Metadata (hex): ${mptIssuanceInfo.MPTokenMetadata}`);
+      }
+    }
+  }
+  
   console.log('\n' + '='.repeat(50));
   console.log('STEP 2: Token Holder authorize MPT');
   console.log('='.repeat(50));
@@ -187,9 +205,6 @@ async function main() {
   
   console.log(`🔐 Holder approve to receive MPT: ${mptIssuanceId}`);
   
-  // First: Holder must authorize receiving a specific MPT tokens
-  // Second: In case lsfMPTRequireAuth has been set during MPT creation, the issuer needs to authorize the holder
-  // Learn more: https://github.com/XRPLF/XRPL-Standards/tree/master/XLS-0033-multi-purpose-tokens#a231-without-allow-listing 
   const authHolderTx = {
     TransactionType: 'MPTokenAuthorize',
     Account: holderWallet.address,
@@ -208,15 +223,14 @@ async function main() {
   }
 
   
-  // === STEP 3: TRANSFER MPT TOKENS ===
   console.log('\n' + '='.repeat(50));
   console.log('STEP 3: Transferring MPT Tokens');
   console.log('='.repeat(50));
   
-  // Transfer tokens from issuer to holder
-  const transferAmount = '1000'; // 10 tokens 
+  const transferAmount = '1000';
+  const displayAmount = transferAmount / Math.pow(10, mptIssuanceInfo.AssetScale);
   
-  console.log(`💸 Transferring ${transferAmount/Math.pow(10, tokenMetadata.decimals)} token units to holder`);
+  console.log(`💸 Transferring ${displayAmount} ${tokenMetadata.ticker} (${transferAmount} base units) to holder`);
   
   const paymentTx = {
     TransactionType: 'Payment',
@@ -232,17 +246,14 @@ async function main() {
     paymentTx,
     client,
     issuerWallet,
-    `Transferring ${transferAmount/ Math.pow(10, tokenMetadata.decimals)} MPT tokens to holder`
+    `Transferring ${displayAmount} MPT tokens to holder`
   );
   
-  // === FINAL STATUS ===
   console.log('\n' + '='.repeat(50));
   console.log('FINAL STATUS & SUMMARY');
   console.log('='.repeat(50));
   
-  // Get MPT balances for both accounts
   try {
-    // Check MPT balances
     const holderMPTs = await client.request({
       command: "account_objects",
       account: holderWallet.address,
@@ -258,28 +269,40 @@ async function main() {
     });
     
     console.log(`\n💳 Token Balances:`);
-    console.log(`📤 Holder MPT Holdings: ${holderMPTs.result.account_objects.length} tokens`);
-    console.log(`📥 Issuer MPT Holdings: ${issuerMPTs.result.account_objects.length} tokens`);
+    console.log(`📤 Holder MPToken Objects: ${holderMPTs.result.account_objects.length}`);
+    console.log(`📥 Issuer MPToken Objects: ${issuerMPTs.result.account_objects.length}`);
     
-    // Display balances if available
     if (holderMPTs.result.account_objects.length > 0) {
-      const holderBalance = holderMPTs.result.account_objects[0].MPTAmount;
-      console.log(`📤 Holder Balance: ${holderBalance / Math.pow(10, tokenMetadata.decimals)} ${tokenMetadata.ticker}`);
+      const holderMPToken = holderMPTs.result.account_objects[0];
+      const holderBalance = holderMPToken.MPTAmount;
+      const displayBalance = holderBalance / Math.pow(10, mptIssuanceInfo.AssetScale);
+      console.log(`📤 Holder Balance: ${displayBalance} ${tokenMetadata.ticker} (${holderBalance} base units)`);
+      console.log(`   🆔 MPToken ID: ${holderMPToken.MPTokenIssuanceID}`);
     }
     
     if (issuerMPTs.result.account_objects.length > 0) {
-      const issuerBalance = issuerMPTs.result.account_objects[0].MPTAmount;
-      console.log(`📥 Issuer Balance: ${issuerBalance / Math.pow(10, tokenMetadata.decimals)} ${tokenMetadata.ticker}`);
+      const issuerMPToken = issuerMPTs.result.account_objects[0];
+      const issuerBalance = issuerMPToken.MPTAmount;
+      const displayBalance = issuerBalance / Math.pow(10, mptIssuanceInfo.AssetScale);
+      console.log(`📥 Issuer Balance: ${displayBalance} ${tokenMetadata.ticker} (${issuerBalance} base units)`);
+      console.log(`   🆔 MPToken ID: ${issuerMPToken.MPTokenIssuanceID}`);
+    }
+    
+    console.log('\n🔍 Fetching updated MPT Issuance info...');
+    const updatedIssuanceInfo = await getMPTIssuanceInfo(client, mptIssuanceId);
+    if (updatedIssuanceInfo) {
+      const outstandingDisplay = updatedIssuanceInfo.OutstandingAmount / Math.pow(10, mptIssuanceInfo.AssetScale);
+      console.log(`📊 Total Outstanding Amount: ${outstandingDisplay} ${tokenMetadata.ticker} (${updatedIssuanceInfo.OutstandingAmount} base units)`);
     }
     
   } catch (error) {
     console.log(`⚠️  Could not fetch token balances: ${error.message}`);
   }
   
-  console.log(`\n🎯 Key Information:`);
+  console.log(`\n🎯 Key Information (Retrieved from Ledger):`);
   console.log(`🆔 MPT Issuance ID: ${mptIssuanceId}`);
   console.log(`🏷️ Token Symbol: ${tokenMetadata.ticker}`);
-  console.log(`📊 Decimals: ${tokenMetadata.decimals}`);
+  console.log(`📊 Asset Scale: ${mptIssuanceInfo.AssetScale} (divisible by 10^${mptIssuanceInfo.AssetScale})`);
   console.log(`🔗 Issuer: ${issuerWallet.address}`);
   
   console.log(`\n🌐 Explore on Testnet:`);
@@ -289,14 +312,16 @@ async function main() {
   console.log(`\n✨ MPT Demo Completed Successfully!`);
   console.log('\n📚 What happened:');
   console.log('   1. ✅ Created MPT issuance with metadata and transfer capabilities');
-  console.log('   2. ✅ Holder approves the MPT in order to receive the token');
-  console.log('   3. ✅ Transferred tokens directly from issuer to holder');
-  console.log('   4. 🆔 Generated unique MPT Issuance ID for all operations');
+  console.log('   2. ✅ Retrieved MPT issuance details from the ledger using ledger_entry');
+  console.log('   3. ✅ Holder approved the MPT to receive tokens');
+  console.log('   4. ✅ Transferred tokens from issuer to holder');
+  console.log('   5. ✅ Displayed balances using AssetScale from on-chain data');
   
   console.log('\n💡 Important Notes:');
-  console.log('   • Only recipients need MPTokenAuthorize, not the issuer');
-  console.log('   • Issuer can directly send tokens without self-authorization');
-  console.log('   • Holder MUST approve the MPT in order to receive the token');
+  console.log('   • AssetScale determines token divisibility (2 = divisible by 100)');
+  console.log('   • All amounts on-chain are stored as base units (integers)');
+  console.log('   • Display amounts = base units / 10^AssetScale');
+  console.log('   • Use ledger_entry to query MPT issuance details from the ledger');
   
   await client.disconnect();
 }
